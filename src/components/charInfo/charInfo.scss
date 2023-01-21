@@ -26,6 +26,9 @@
             height: 150px;
             object-fit: cover;
         }
+        img.no_img {
+            object-fit: contain;
+        }
     }
     &__btns {
         margin-top: 35px;

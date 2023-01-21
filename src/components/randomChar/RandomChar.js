@@ -43,8 +43,7 @@ class RandomChar extends Component{
         this.marvelService
         .getCharacter(id)
         .then(this.onCharLoaded)
-        .catch(this.onError);
-        
+        .catch(this.onError)
     }
 
     render () {
@@ -83,7 +82,7 @@ const View =  ({char}) => {
  
     return (
             <div className="randomchar__block">
-                <img src={thumbnail} alt="Random character" className="randomchar__img"/>
+                <img src={thumbnail} alt="Random character" className={thumbnail.includes('image_not_available')? "randomchar__img no_img" : "randomchar__img"}/>
                 <div className="randomchar__info">
                     <p className="randomchar__name">{name}</p>
                     <p className="randomchar__descr">
@@ -103,3 +102,8 @@ const View =  ({char}) => {
 }
 
 export default RandomChar;
+
+
+// let str = 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'
+
+// console.log(str.includes('image_not_available')? "randomchar__img no_img" : "randomchar__img")
