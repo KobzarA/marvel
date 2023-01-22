@@ -1,4 +1,7 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
+
+
 import MarvelService from '../../services/MarvelService';
 import Spinner from '../spiner/Spiner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -20,7 +23,7 @@ class CharList extends Component {
     marvelService = new MarvelService();
 
     componentDidMount() {
-        this.onRequest();
+        this.onRequest(this.state.offset);
     }
 
 
@@ -89,7 +92,7 @@ class CharList extends Component {
     }
 
     render() {
-        const {charList, loading, error, offset, charEnded, loadingMoreItems} = this.state
+        const {charList, loading, error, offset, charEnded, loadingMoreItems} = this.state;
         const items = this.renderItems(charList)
         
         const errorMessage = error ? <ErrorMessage/> : null;
@@ -117,5 +120,8 @@ class CharList extends Component {
     }
 }
 
+CharList.propTypes = {
+    onCharSelect: PropTypes.func.isRequired
+}
 
 export default CharList;
