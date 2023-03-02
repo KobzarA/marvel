@@ -2,7 +2,7 @@ import { useHttp } from "../hooks/http.hook";
 
 const  useMarvelService = () => {
     const {loading, request, error , clearError} = useHttp();
-
+                      
     const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
     const _apiKey = 'apikey=35589cb5e6aa216ba55754511e0d35a8';
     const _baseOffset = 210; 
@@ -40,8 +40,30 @@ const  useMarvelService = () => {
             comicsList: char.comics.items
         }
     }
+    const getAllComics = async (offset = _baseOffset) => {
+        const res = await request(`${_apiBase}comics?noVariants=true&startYear=2021&limit=8&offset=${offset}&${_apiKey}`);
+        // console.log(res);
+        return res.data.results.map(_transformComics);
+    }    
 
-    return {loading, error, clearError, getAllCharacters, getCharacter };
+    const getComics = async (id) => {
+        const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
+        // console.log(res);
+        return _transformComics(res.data.results[0]);
+        }
+
+    const _transformComics = (comics) => {
+        return {
+            title: comics.title,
+            description: comics.description ? `${comics.description.slice(0, 210)}...` : 'There is no description for this character',
+            thumbnail: comics.thumbnail.path + '.' + comics.thumbnail.extension,
+            price: comics.prices[0].price,
+            id: comics.id
+            
+        }
+    }
+
+    return {loading, error, clearError, getAllCharacters, getCharacter, getAllComics, getComics};
 }
 
 export default useMarvelService;

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import useMarvelService from '../../services/MarvelService';
 import Skeleton from '../skeleton/Skeleton';
 import Spinner from '../spiner/Spiner';
@@ -19,6 +19,7 @@ const CharInfo = (props) => {
         updateChar(); 
         
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.charId]);
     // componentDidUpdate( prevProp, prevState) {
     //     if(this.props.charId !== prevProp.charId ){
