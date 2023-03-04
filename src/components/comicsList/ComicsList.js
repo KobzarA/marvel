@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import useMarvelService from '../../services/MarvelService';
+import { Link } from 'react-router-dom';
 
 import Spinner from '../spiner/Spiner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 import './comicsList.scss';
-import uw from '../../resources/img/UW.png';
-import xMen from '../../resources/img/x-men.png';
 
 
 /* id thumbnail  */ 
@@ -42,18 +41,18 @@ const ComicsList = () => {
     
     const renderItems = (arr) => {
         console.log(arr);
-        const items = arr.map((item) => {
+        const items = arr.map((item, i) => {
             const {id, thumbnail, title, price} = item;
             let imgStyle = thumbnail.includes('image_not_available')? "no_img" : null;
              
             return (
                 <li className="comics__item"
-                    key={id}>
-                    <a href="#">
+                    key={ i}>
+                    <Link to={`/comics/${id}`}>
                         <img src={thumbnail} alt={title} className={`comics__item-img ${imgStyle}`} />
                         <div className="comics__item-name">{title}</div>
                         <div className="comics__item-price">{`${price}$`}</div>
-                    </a>
+                    </Link>
                 </li>
             )
         });
