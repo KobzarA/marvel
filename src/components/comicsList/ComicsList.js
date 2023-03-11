@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import useMarvelService from '../../services/MarvelService';
 import { Link } from 'react-router-dom';
+import { CSSTransition } from 'react-transition-group';
 
 import Spinner from '../spiner/Spiner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -75,7 +76,11 @@ const ComicsList = () => {
     return (
         <div className="comics__list">
             {errorMessage}
-            {items}
+            <CSSTransition
+                in={!(loading && error) }
+                classNames='comics__item'>
+               {items} 
+            </CSSTransition>
             {spinner}
             <button style={{ 'display': charEnded ? 'none' : 'block' }}
                     disabled={loadingMoreItems}
