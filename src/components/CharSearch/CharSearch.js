@@ -1,26 +1,19 @@
-import { useState, useEffect } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useState} from "react";
+import { Formik, Form, Field, ErrorMessage as FormikErrorMessage } from "formik";
 import * as Yup from 'yup'
 import { Link } from "react-router-dom";
 import useMarvelService from '../../services/MarvelService';
 import Spinner from "../spiner/Spiner";
+import ErrorMessage from "../errorMessage/ErrorMessage";
 import './charSearch.scss';
 
 const CharSearch = () => {
     const [character, setCharacter] = useState(null);
     const { loading, error, clearError, getCharacterByName } = useMarvelService();
     console.log(character)
-    // useEffect(() => {
-    //     if (Array.isArray(character)) {
-    //         LinksResult(character)
-    //     }
-    // }, [character]);
 
     const links = (arr) => {
         if (arr.length === 0) {
-            // let timeout = setTimeout(() => {
-            //     document.querySelector('.error_search').remove();
-            // }, 6000);
             setTimeout(() => {
                setCharacter(null);
             }, 6000);
@@ -49,6 +42,7 @@ const CharSearch = () => {
 
     };
     const onSubmit = (name) => {
+        clearError();
         getCharacterByName(name)
             .then(setCharacter);
         
@@ -56,6 +50,7 @@ const CharSearch = () => {
 
     const items = Array.isArray(character)? links(character) : null;
     const spinner = loading ? <Spinner /> : null;
+    const errorMessage = error ? <ErrorMessage/> : null
     const results = items ? items : null;
 
     return (
@@ -78,12 +73,13 @@ const CharSearch = () => {
                     <button type="submit" className="button button__main">
                         <div className="inner">Find</div>
                     </button>
-                    <ErrorMessage className='error' name='name' component='div' />
+                    <FormikErrorMessage className='error' name='name' component='div' />
                 </Form>
                 
 
             </Formik>
             {spinner}
+            {errorMessage}
             {results}
 
         </div>

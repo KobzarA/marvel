@@ -12,7 +12,7 @@ const MainPage = lazy(() => import('../pages/MainPage'));
 const ComicsPage = lazy(() => import('../pages/ComicsPage'));
 const SingleComicPage = lazy(() => import('../pages/SingleComicPage'));
 const SingleCharacterPage = lazy(() => import('../pages/SingleCharacterPage'));
-
+const SinglePage = lazy(() => import('../pages/SinglePage'));
 const App = () => {
     
     
@@ -31,12 +31,12 @@ const App = () => {
                                     <ComicsPage />
                                 </Route>
 
-                                <Route path="/comics/:comicId">
-                                    <SingleComicPage />
+                                <Route path="/comics/:id">
+                                    <SinglePage Component={SingleComicPage} dataType='comic' />
                                 </Route>
 
                                 <Route path="/characters/:id">
-                                    <SingleCharacterPage />
+                                    <SinglePage Component={SingleCharacterPage} dataType='character'/>
                                 </Route>
 
                                 <Route path="*">

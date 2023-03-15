@@ -16,7 +16,7 @@
     
         &-enter-active {
             opacity: 1;
-            transition: opacity 200ms;
+            transition: opacity 500ms ease-in;
         }
     
         &-exit {
@@ -25,7 +25,7 @@
     
         &-exit-active {
             opacity: 0;
-            transition: opacity 200ms;
+            transition: opacity 500ms ease-in;
         }
         &-img {
             box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);

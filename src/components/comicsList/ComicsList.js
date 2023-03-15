@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import useMarvelService from '../../services/MarvelService';
 import { Link } from 'react-router-dom';
-import { CSSTransition } from 'react-transition-group';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import Spinner from '../spiner/Spiner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -44,23 +45,30 @@ const ComicsList = () => {
         console.log(arr);
         const items = arr.map((item, i) => {
             const {id, thumbnail, title, price} = item;
-            let imgStyle = thumbnail.includes('image_not_available')? "no_img" : null;
+            let imgStyle = thumbnail.includes('image_not_available')? "no_img" : '';
              
             return (
-                <li className="comics__item"
-                    key={ i}>
-                    <Link to={`/comics/${id}`}>
-                        <img src={thumbnail} alt={title} className={`comics__item-img ${imgStyle}`} />
-                        <div className="comics__item-name">{title}</div>
-                        <div className="comics__item-price">{`${price}$`}</div>
-                    </Link>
-                </li>
+                <CSSTransition
+                    key={item.id}
+                    timeout={500}
+                    classNames='comics__item'>
+                    <li className="comics__item"
+                        key={i}>
+                        <Link to={`/comics/${id}`}>
+                            <img src={thumbnail} alt={title} className={`comics__item-img ${imgStyle}`} />
+                            <div className="comics__item-name">{title}</div>
+                            <div className="comics__item-price">{`${price}$`}</div>
+                        </Link>
+                    </li>
+                </CSSTransition>
             )
         });
 
         return (
             <ul className="comics__grid">
-                {items}
+                <TransitionGroup component={null}>
+                    {items}
+                </TransitionGroup>
             </ul>
         )
 
@@ -76,11 +84,7 @@ const ComicsList = () => {
     return (
         <div className="comics__list">
             {errorMessage}
-            <CSSTransition
-                in={!(loading && error) }
-                classNames='comics__item'>
-               {items} 
-            </CSSTransition>
+            {items} 
             {spinner}
             <button style={{ 'display': charEnded ? 'none' : 'block' }}
                     disabled={loadingMoreItems}
@@ -93,62 +97,4 @@ const ComicsList = () => {
 }
 
 export default ComicsList;
-
-/* <ul className="comics__grid">
-                <li className="comics__item">
-                    <a href="#">
-                        <img src={uw} alt="ultimate war" className="comics__item-img"/>
-                        <div className="comics__item-name">ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB</div>
-                        <div className="comics__item-price">9.99$</div>
-                    </a>
-                </li>
-                <li className="comics__item">
-                    <a href="#">
-                        <img src={xMen} alt="x-men" className="comics__item-img"/>
-                        <div className="comics__item-name">X-Men: Days of Future Past</div>
-                        <div className="comics__item-price">NOT AVAILABLE</div>
-                    </a>
-                </li>
-                <li className="comics__item">
-                    <a href="#">
-                        <img src={uw} alt="ultimate war" className="comics__item-img"/>
-                        <div className="comics__item-name">ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB</div>
-                        <div className="comics__item-price">9.99$</div>
-                    </a>
-                </li>
-                <li className="comics__item">
-                    <a href="#">
-                        <img src={xMen} alt="x-men" className="comics__item-img"/>
-                        <div className="comics__item-name">X-Men: Days of Future Past</div>
-                        <div className="comics__item-price">NOT AVAILABLE</div>
-                    </a>
-                </li>
-                <li className="comics__item">
-                    <a href="#">
-                        <img src={uw} alt="ultimate war" className="comics__item-img"/>
-                        <div className="comics__item-name">ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB</div>
-                        <div className="comics__item-price">9.99$</div>
-                    </a>
-                </li>
-                <li className="comics__item">
-                    <a href="#">
-                        <img src={xMen} alt="x-men" className="comics__item-img"/>
-                        <div className="comics__item-name">X-Men: Days of Future Past</div>
-                        <div className="comics__item-price">NOT AVAILABLE</div>
-                    </a>
-                </li>
-                <li className="comics__item">
-                    <a href="#">
-                        <img src={uw} alt="ultimate war" className="comics__item-img"/>
-                        <div className="comics__item-name">ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB</div>
-                        <div className="comics__item-price">9.99$</div>
-                    </a>
-                </li>
-                <li className="comics__item">
-                    <a href="#">
-                        <img src={xMen} alt="x-men" className="comics__item-img"/>
-                        <div className="comics__item-name">X-Men: Days of Future Past</div>
-                        <div className="comics__item-price">NOT AVAILABLE</div>
-                    </a>
-                </li>
-            </ul>*/ 
+ 
