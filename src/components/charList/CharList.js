@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
@@ -10,13 +10,29 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 import './charList.scss';
 
 
+const setContent = (process, Component, loadingMoreItems) => {
+    switch (process) {
+        case 'waiting':
+            return <Spinner/>;
+        case 'loading':
+            return loadingMoreItems ? <><Component /><Spinner /></> : null ;
+        case 'confirmed':
+            return <Component/>
+        case 'error':
+            return <ErrorMessage />
+        default:
+            throw new Error('Unexpected process state');
+    }
+
+};
+
 const CharList = (props) => {
     const   [charList, setCharList] = useState([]),
             [loadingMoreItems, setLoadingMoreItems] = useState(false),
             [offset, setOffset] = useState(210),
             [charEnded, setCharEnded] = useState(false);
 
-    const {loading, error, getAllCharacters} = useMarvelService();
+    const {getAllCharacters , process, setProcess} = useMarvelService();
 
     useEffect(() => {
         onRequest(offset);
@@ -39,7 +55,7 @@ const CharList = (props) => {
         setLoadingMoreItems(true) 
         getAllCharacters(offset)
         .then(onCharListLoaded)
-        
+        .then(() => setProcess("confirmed"));
     }
 
     let itemRefs = useRef([]);
@@ -49,8 +65,6 @@ const CharList = (props) => {
         itemRefs.current[id].classList.add('char__item_selected');
         itemRefs.current[id].focus();
     }
-
-
 
     const renderItems = (arr) => {
         const items = arr.map((item, i) => {
@@ -89,37 +103,21 @@ const CharList = (props) => {
                 
             </ul>
         )
-
     }
-
-    
-
-   
-    // const {charList, loading, error, offset, charEnded, loadingMoreItems} = this.state;
-
-    const items = renderItems(charList);
-    
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading || loadingMoreItems ? <Spinner/> : null;
-    
-
-        
-
-        return (
-            <div className="char__list">
-               {errorMessage}
-               {items}
-               {spinner}
-                <button 
-                    style={{'display': charEnded ? 'none' : 'block'}}
-                    disabled={loadingMoreItems}
-                    onClick={() => {onRequest(offset)}}
-                    className="button button__main button__long"
-                    >
-                    <div className="inner">load more</div>
-                </button>
-            </div>
-        )
+    const items = useMemo(() => setContent(process, () => renderItems(charList), loadingMoreItems), [process])
+    return (
+        <div className="char__list">
+            {items}
+            <button 
+                style={{'display': charEnded ? 'none' : 'block'}}
+                disabled={loadingMoreItems}
+                onClick={() => {onRequest(offset)}}
+                className="button button__main button__long"
+                >
+                <div className="inner">load more</div>
+            </button>
+        </div>
+    )
     
 }
 

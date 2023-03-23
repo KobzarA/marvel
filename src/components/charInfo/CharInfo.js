@@ -1,87 +1,54 @@
 import { useState, useEffect } from 'react';
 import useMarvelService from '../../services/MarvelService';
-import Skeleton from '../skeleton/Skeleton';
-import Spinner from '../spiner/Spiner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
+import setContent from '../../utils/setContent';
 import PropTypes from 'prop-types';
 import './charInfo.scss';
 
 
 const CharInfo = (props) => {
     let [char, setChar] = useState(null);
-    let {loading, error, getCharacter, clearError} = useMarvelService();
+    let {getCharacter, clearError, process, setProcess} = useMarvelService();
     
-
-    // componentDidMount () {
-    //     this.updateChar();
-    // }
     useEffect (() => {
         updateChar(); 
         
         
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.charId]);
-    // componentDidUpdate( prevProp, prevState) {
-    //     if(this.props.charId !== prevProp.charId ){
-    //         this.updateChar();
-    //     }
-    // }
-    // componentDidUpdate(){
-    //     this.updateChar();
-    // }
-    
+
     const onCharLoaded = (char) => {
         setChar(char);
     }
 
     const updateChar = () => {
-        // this.setState({loading:true, char: null});
+
         clearError();
         const id = props.charId;
         if (!id) {
             return;
         }
         getCharacter(id)
-        .then(onCharLoaded);
+            .then(onCharLoaded)
+            .then(() => setProcess("confirmed"));
         
     }
 
 
-    
-        const skeleton = char || loading || error ? null : <Skeleton/>;
-        const errorMessage = error ? <ErrorMessage/> : null;
-        const spinner = (loading) ? <Spinner/> : null;
-        const content = !(loading || error || !char)  ? <View char={char}/> : null;
-
         return (
             <div className="char__info">
-                {skeleton}
-                {errorMessage}
-                {spinner}
-                {content}
+                {setContent(process, View, char)}
             </div>
         )
       
 }
 
-const View = ({char}) => {
-    const {name, description, thumbnail, homepage, wiki, comicsList} = char;
-    // const comics = () => {
-    //     if (comicsList.length > 10 ) {
-    //         comicsList.filter((item, i, list) => list.length > 10)
-    //     } else if (comicsList.length === 0) {
-    //         return ( 
-    //         <>
-    //          div.
-    //         </>
-    //         )
-    //     }
-    // } 
+const View = ({data}) => {
+    const {name, description, thumbnail, homepage, wiki, comicsList} = data;
 
     return (
         <>
         
-        <div className="char__basics">
+            <div className="char__basics">
                 <img src={thumbnail} alt={name} className={thumbnail.includes('image_not_available')? "no_img" : null}/>
                 <div>
                     <div className="char__info-name">{name}</div>

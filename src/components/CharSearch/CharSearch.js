@@ -7,16 +7,32 @@ import Spinner from "../spiner/Spiner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import './charSearch.scss';
 
+
+const setContent = (process, Component) => {
+    switch (process) {
+        case 'waiting':
+            return null;
+        case 'loading':
+            return <Spinner />;
+        case 'confirmed':
+            return <Component/>
+        case 'error':
+            return <ErrorMessage />
+        default:
+            throw new Error('Unexpected process state');
+    }
+
+};
 const CharSearch = () => {
     const [character, setCharacter] = useState(null);
-    const { loading, error, clearError, getCharacterByName } = useMarvelService();
-    console.log(character)
+    const {clearError, getCharacterByName, process, setProcess } = useMarvelService();
+    // console.log(character)
 
     const links = (arr) => {
         if (arr.length === 0) {
-            setTimeout(() => {
-               setCharacter(null);
-            }, 6000);
+            // setTimeout(() => {
+            // setProcess('waiting');
+            // }, 6000);
             return (
                 <>
                     <div className="error error_search">No match on your request</div>
@@ -44,14 +60,15 @@ const CharSearch = () => {
     const onSubmit = (name) => {
         clearError();
         getCharacterByName(name)
-            .then(setCharacter);
+            .then(setCharacter)
+            .then(() => setProcess("confirmed"));
         
     };
 
-    const items = Array.isArray(character)? links(character) : null;
-    const spinner = loading ? <Spinner /> : null;
-    const errorMessage = error ? <ErrorMessage/> : null
-    const results = items ? items : null;
+    // const items = Array.isArray(character)? links(character) : null;
+    // const spinner = loading ? <Spinner /> : null;
+    // const errorMessage = error ? <ErrorMessage/> : null
+    // const results = items ? items : null;
 
     return (
         <div className="char__search">
@@ -78,9 +95,7 @@ const CharSearch = () => {
                 
 
             </Formik>
-            {spinner}
-            {errorMessage}
-            {results}
+            {setContent(process,() => links(character))}
 
         </div>
     )

@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
-import useMarvelService from '../../services/MarvelService';
-import Spinner from '../spiner/Spiner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
+import useMarvelService from '../../services/MarvelService'; 
+import setContent from '../../utils/setContent';
 
 import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.png';
 
 const RandomChar = () => {
     const [char, setChar] = useState(null);
-    const {loading, error, clearError, getCharacter} = useMarvelService();
+    const {clearError, getCharacter, process, setProcess} = useMarvelService();
 
     useEffect(() => {
         updateChar();
@@ -27,18 +26,13 @@ const RandomChar = () => {
         clearError();
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
         getCharacter(id)
-        .then(onCharLoaded);
+        .then(onCharLoaded)
+        .then(() => setProcess("confirmed"));
     }
-        
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spiner = loading ? <Spinner/> : null;
-    const content = !(loading || error || !char) ? <View char={char}/> : null;
 
     return (
         <div className="randomchar">
-            {errorMessage}
-            {spiner}
-            {content}
+            {setContent(process, View, char)}
             <div className="randomchar__static">
                 <p className="randomchar__title">
                     Random character for today!<br/>
@@ -56,8 +50,8 @@ const RandomChar = () => {
     )   
 }
 
-const View =  ({char}) => {
-    let {thumbnail, name, description, homepage, wiki} = char;
+const View =  ({data}) => {
+    let {thumbnail, name, description, homepage, wiki} = data;
  
     return (
             <div className="randomchar__block">
@@ -81,8 +75,3 @@ const View =  ({char}) => {
 }
 
 export default RandomChar;
-
-
-// let str = 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg'
-
-// console.log(str.includes('image_not_available')? "randomchar__img no_img" : "randomchar__img")
